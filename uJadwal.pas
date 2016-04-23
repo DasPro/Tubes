@@ -31,6 +31,16 @@ procedure schedule( T : dbTayang);
 	I.S : T terdefinisi
 	F.S : Menuliskan Jam Tayang Film kepada user	}
 	
+procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);	
+{Procedure yang menampilkan film hari ini
+  I.S : dT terdefinisi
+  F.S : Menuliskan judul film yang tayang}
+  
+procedure upcoming(dT: dbKapasitas;tgl:tanggal);	
+{Procedure yang menampilkan film yang tayang minggu depan atau h+7
+  I.S : dT terdefinisi
+  F.S : Menuliskan judul film yang tayang}
+	
 implementation
 procedure load (var f:text;p:string);
 begin
@@ -155,5 +165,63 @@ begin
 	TulisJam(index,f,T,tanggal);
 	
 end;
+
+procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);
+
+{Kamus}
+Var
+  i:integer;
+  
+{Algoritma}
+Begin
+  i:=1;
+  While (i<=dT.Neff) do
+  Begin  
+    If (tgl.Tanggal=dT.Kapasitas[i].Tanggal) and (tgl.Bulan=dT.Kapasitas[i].Bulan) and (tgl.Tahun=dT.Kapasitas[i].Tahun) then
+    Begin
+      Writeln('>',dT.Kapasitas[i].Nama);
+      i:=i+1;
+      while (dT.Kapasitas[i].Nama=dT.Kapasitas[i-1].Nama) and (i<=dT.Neff) do
+        i:=i+1;
+    End
+    Else
+    i:=i+1;
+  End;
+End;
+
+procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);
+
+{Kamus}
+Var
+  i:integer;
+  
+{Algoritma}
+Begin
+  i:=1;
+  While (i<=dT.Neff) do
+  Begin  
+    If (tgl.Tanggal=dT.Kapasitas[i].Tanggal) and (tgl.Bulan=dT.Kapasitas[i].Bulan) and (tgl.Tahun=dT.Kapasitas[i].Tahun) then
+    Begin
+      Writeln('>',dT.Kapasitas[i].Nama);
+      i:=i+1;
+      while (dT.Kapasitas[i].Nama=dT.Kapasitas[i-1].Nama) and (i<=dT.Neff) do
+        i:=i+1;
+    End
+    Else
+    i:=i+1;
+  End;
+End;
+
+procedure upcoming(dT: dbKapasitas;tgl:tanggal);
+
+{Kamus}
+Var
+  i:integer;
+  
+{Algoritma}
+Begin
+  tgl:=afterXDay(tgl,7);
+  nowPlaying(dT,tgl);
+End;
 	
 end.
