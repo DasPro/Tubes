@@ -241,9 +241,9 @@ end;
 		
 	{Algoritma}
 	begin
-		write('> Masukkan Pencarian : ');
+		write('> Masukkan pencarian berdasarkan sinopsis, judul, atau genre : ');
 		readln(input);
-		writeln('> Daftar Film : ');
+		writeln('> Daftar film yang sesuai dengan pencarian : ');
 		//Mekanisme Pencarian Daftar Film
 		for i:= 1 to dF.Neff do
 		begin
