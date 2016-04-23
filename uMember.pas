@@ -15,7 +15,7 @@ end;
 procedure load (var f:text;p:string);
 procedure loadMember(var dM: dbMember);
 
-procedure register(dM : dbMember);
+procedure register(var dM : dbMember);
 
 implementation
 procedure load (var f:text;p:string);
@@ -51,7 +51,7 @@ begin
 	close(dMember);    
 end;
 
-procedure register(dM : dbMember);
+procedure F14Register(var dM : dbMember);
 // Kamus Lokal
 Var
 	username,password : string;
@@ -62,7 +62,8 @@ Var
 begin
 	stop:=false;
 	repeat
-		write('> Buat UserName Anda: ');readln(username);
+		write('> Buat UserName Anda: ');
+		readln(username);
 		i:=1;
 		found:=false;
 		while (found=false) and (i<=dM.Neff) do
@@ -74,10 +75,11 @@ begin
 			end;
 			i:=i+1;
 		end;
-		if found=false then stop:=true;
-	until stop=true;
+		if found=false then 
+			stop:=true;
+	until (stop=true);
 	write('> Masukkan password Anda: ');readln(password);
-	dM.Neff:=dM.Neff+1;
+	dM.Neff:= dM.Neff+1;
 	dM.Member[dM.Neff].UserName:=username;
 	dM.Member[dM.Neff].Password:=password;
 	dM.Member[dM.Neff].Saldo:=100000;
