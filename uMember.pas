@@ -15,7 +15,7 @@ end;
 procedure load (var f:text;p:string);
 procedure loadMember(var dM: dbMember);
 
-procedure register(var dM : dbMember);
+procedure F14Register(var dM : dbMember);
 
 implementation
 procedure load (var f:text;p:string);
