@@ -149,20 +149,33 @@ end;
 	var
 		judul : string;
 		i : integer;
-
+		found : boolean;
+		
 	begin
-		write('> Judul Film : ');
-		readln(judul);
-		i := 1;
-		while (i <= TFilm.Neff) and (judul <> TFilm.Film[i].nama) do
-		begin
-			i := i+1;
-		end;
-		writeln('> ', TFilm.Film[i-1].Nama);
-		writeln('> ', TFilm.Film[i-1].Genre); 
-		writeln('> ', TFilm.Film[i-1].Rating);
-		writeln('> ', TFilm.Film[i-1].Durasi);
-		writeln('> ', TFilm.Film[i-1].Sin);
+		repeat
+			write('> Judul Film : ');
+			readln(judul);
+			i := 1;
+			found := False;
+			while (i <= TFilm.Neff) and (found=False) do
+			begin
+				if (lowAll(judul)=lowAll(TFilm.Film[i].Nama)) then
+					found := True
+				else
+					i := i + 1;
+			end;
+			if (found = False) then
+			begin
+				writeln('Masukkan judul film salah');
+			end else
+			begin
+			writeln('> ', TFilm.Film[i].Nama);
+			writeln('> ', TFilm.Film[i].Genre); 
+			writeln('> ', TFilm.Film[i].Rating);
+			writeln('> ', TFilm.Film[i].Durasi);
+			writeln('> ', TFilm.Film[i].Sin);
+			end;
+		until (found=True);
 	end;
 
 end.
