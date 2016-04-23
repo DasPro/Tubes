@@ -49,6 +49,8 @@ begin
 			'payCreditCard' : payCreditCard(tPemesanan,tFilm);
 			'payMember'		: payMember(tPemesanan, tFilm, tMember, idx);
 			'loginMember'	: loginMember(tMember, idx);
+			'nowPlaying'  : nowPlaying(tKapasitas,tgl);
+			'upcoming'    : upcoming(tKapasitas,tgl);
 			'exit'			: begin
 									F15Exit(tKapasitas,tMember,tPemesanan);
 									stopProgram:=true;
