@@ -460,7 +460,7 @@ end;
 	end;
 	
 //F11-payCreditCard
-	procedure payCreditCard(T1: dbPemesanan; T2: dbFilm);
+procedure payCreditCard(var T1: dbPemesanan; T2: dbFilm);
 	//kamus lokal
 	var
 	c, idx, DD, MM, YY : integer;
@@ -472,31 +472,43 @@ end;
 	readln(nopesan);
 	Val(copy(nopesan,3,1), c);
 	
-	DD := T1.Pemesanan[c].Tanggal;
-	MM := T1.Pemesanan[c].Bulan;
-	YY := T1.Pemesanan[c].Tahun;
-	
-	idx := cariIndeks(T2,T1);
-	//mengubah isi dari tabel ke long int dan menampungnya ke suatu variable 
-	X := T1.Pemesanan[c].Total; 
-	Y := T2.Film[idx].hEnd;
-	if (getDay(DD,MM,YY) = 'Sabtu') and ( T1.Pemesanan[c].Jumlahkursi > 1) then
+	while c>T1.Neff do
 	begin
-		 harga:= x - y;
-	end else
-		harga:= x;
-	
-	writeln('> Harga yang harus dibayar: ',harga);
-	write('> Nomor kartu kredit: ');
-	//asumsi input selalu valid 15 digit
-	readln(kkredit);									
-	writeln('> Pembayaran sukses!'); 
-	//mmengganti status pencatatan di array
-	T1.Pemesanan[c].Jenis := 'Credit Card';
+		writeln('> Maaf No pemesanan tidak ada dalam data base. Ulangi Input!');
+		write('> Nomor pesanan: ');
+		readln(nopesan);
+		c := StrToInt(nopesan[3]); 
+	end;
+	if (T1.Pemesanan[c].Jenis<>'Belum Dibayar') then
+		writeln('Nomor pesanan telah dibayar')
+	else
+	begin
+		DD := T1.Pemesanan[c].Tanggal;
+		MM := T1.Pemesanan[c].Bulan;
+		YY := T1.Pemesanan[c].Tahun;
+		
+		idx := cariIndeks(T2,T1);
+		//mengubah isi dari tabel ke long int dan menampungnya ke suatu variable 
+		X := T1.Pemesanan[c].Total; 
+		Y := T2.Film[idx].hEnd;
+		if (getDay(DD,MM,YY) = 'Sabtu') and ( T1.Pemesanan[c].Jumlahkursi > 1) then
+		begin
+			 harga:= x - y;
+		end else
+			harga:= x;
+		
+		writeln('> Harga yang harus dibayar: ',harga);
+		write('> Nomor kartu kredit: ');
+		//asumsi input selalu valid 15 digit
+		readln(kkredit);									
+		writeln('> Pembayaran sukses!'); 
+		//mmengganti status pencatatan di array
+		T1.Pemesanan[c].Jenis := 'Credit Card';
+	end;
 	end;
 		
 //F12-payMember
-	procedure payMember (T1 : dbPemesanan ; T2 : dbFilm ; T3: dbMember ; idx : integer); 
+procedure payMember (var T1 : dbPemesanan ; T2 : dbFilm ;var T3: dbMember ;var idx : integer); 
 	//kamus lokal
 	var
 	sisaSaldo, hargamember, harga : longint;
@@ -504,43 +516,59 @@ end;
 	nopesan, pilihan : string;
 	//algoritma
 	begin
-			if (idx=0) then
-				loginMember(T3, idx)
-			else
-			begin
-				writeln('> Anda akan melakukan pembayaran menggunakan saldo member');
-				write('> Nomor pesanan: ');
-				readln(nopesan);
-				c := StrToInt(nopesan[3]); 
-				harga := T1.Pemesanan[c].Total;
-				hargamember := 9 * harga div 10 ;
-				writeln('> Harga yang harus dibayar: ',hargamember);
-				if (T3.Member[idx].Saldo >= hargamember) then
-					begin
-						sisaSaldo:= T3.Member[idx].Saldo - hargamember;
-						writeln('> Sisa saldo anda adalah : ',sisaSaldo);
-						writeln('> Pembayaran sukses!'); 
-						//mmengganti status pencatatan di array
-						T1.Pemesanan[c].Jenis := 'Member';
-					end else
-					begin
-							writeln('> Sisa saldo anda tidak mencukupi');
-							writeln('> Silahkan pilih metode pembayaran lain. Metode pembayaran yang dapat anda lakukan:');
-							writeln('> 1 Tunai');
-							writeln('> 2 Pay Member');
-							readln(pilihan);
-							if (pilihan = 'Tunai') then
-							begin
-								writeln('> Kode booking anda adalah ', nopesan);
-								writeln('> Silahkan melakukan pembayaran di bioskop');
-								T1.Pemesanan[c].Jenis := 'Tunai';
-							end else if (pilihan = 'Pay Member') then 
-							begin
-								payCreditCard(T1, T2);
-							end;
-					end;
-				end;
+		if (idx=0) then
+		begin
+			loginMember(T3, idx);
+		end else
+		begin
+			writeln('> Halo ! Anda login sebagai ', T3.Member[idx].UserName);
+			writeln('> Sisa Saldo anda adalah ', T3.Member[idx].Saldo);
+		end;
 		
+		writeln('> Anda akan melakukan pembayaran menggunakan saldo member');
+		write('> Nomor pesanan: ');
+		readln(nopesan);
+		c := StrToInt(nopesan[3]); 
+		while c>T1.Neff do
+		begin
+			writeln('> Maaf No pemesanan tidak ada dalam data base. Ulangi Input!');
+			write('> Nomor pesanan: ');
+			readln(nopesan);
+			c := StrToInt(nopesan[3]); 
+		end;
+		if (T1.Pemesanan[c].Jenis<>'Belum Dibayar') then
+			writeln('Nomor pesanan telah dibayar')
+		else
+		begin
+			harga := T1.Pemesanan[c].Total;
+			hargamember := 9 * harga div 10 ;
+			writeln('> Harga yang harus dibayar: ',hargamember);
+			if (T3.Member[idx].Saldo >= hargamember) then
+			begin
+				sisaSaldo:= T3.Member[idx].Saldo - hargamember;
+				writeln('> Sisa saldo anda adalah : ',sisaSaldo);
+				writeln('> Pembayaran sukses!'); 
+				//mmengganti status pencatatan di array
+				T1.Pemesanan[c].Jenis := 'Member';
+				T3.Member[idx].Saldo:=sisaSaldo;
+			end else
+			begin
+				writeln('> Sisa saldo anda tidak mencukupi');
+				writeln('> Silahkan pilih metode pembayaran lain. Metode pembayaran yang dapat anda lakukan:');
+				writeln('> 1 Tunai');
+				writeln('> 2 Pay Member');
+				readln(pilihan);
+				if (pilihan = 'Tunai') then
+				begin
+					writeln('> Kode booking anda adalah ', nopesan);
+					writeln('> Silahkan melakukan pembayaran di bioskop');
+					T1.Pemesanan[c].Jenis := 'Tunai';
+				end else if (pilihan = 'Pay Member') then 
+				begin
+					payCreditCard(T1, T2);
+				end;
+			end;
+		end;	
 	end;
 	
 end.
