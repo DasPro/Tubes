@@ -1,19 +1,23 @@
 program ReservasiTiketBioskop;
-uses uFilm, uJadwal, uKapasitas, uMember, uTanggal,
-		sysutils,crt;
+
+uses uFilm, uJadwal, uKapasitas, uMember, uTanggal, uGeneral,
+	sysutils, crt;
 
 var
 	tFilm	: dbFilm;
 	tTayang	: dbTayang;
 	tKapasitas: dbKapasitas;
 	tMember : dbMember;
+	tPemesanan : dbPemesanan;
 	tgl : Tanggal;
 	Fx : string;
 	stopProgram : boolean;
+	idx : integer;
 	
 begin
 	// -- Proses Inisiasi -- //
 	stopProgram:= false;
+	idx := 0;
 	
 	repeat
 		clrscr;
@@ -38,9 +42,15 @@ begin
 								loadTanggal(tgl);
 								delay(1500);
 							  end;
+			'schedule'		: schedule(tTayang);
 			'genreFilter'	: genreFilter(tFilm);
 			'ratingFilter'	: ratingFilter(tFilm);
+			'searchMovie'	: searchMovie(tFilm);
+			'payCreditCard' : payCreditCard(tPemesanan,tFilm);
+			'payMember'		: payMember(tPemesanan, tFilm, tMember, idx);
+			'loginMember'	: loginMember(tMember, idx);
 			'exit'			: begin
+									F15Exit(tKapasitas,tMember,tPemesanan);
 									stopProgram:=true;
 							  end;
 		end; 
