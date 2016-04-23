@@ -4,6 +4,7 @@ interface
 
 uses crt,sysutils,uJadwal,uTanggal,uMember,uKapasitas,uFilm;
 
+const Nmax = 1000;
 type Pemesanan = record
 	No : integer;
 	Nama : string;
@@ -15,7 +16,7 @@ type Pemesanan = record
 end;
 
 type dbPemesanan = record
-		Pemesanan : array [1..1000] of Pemesanan;
+		Pemesanan : array [1..Nmax] of Pemesanan;
 		Neff : integer;
 end;
 
@@ -26,14 +27,14 @@ procedure layarUtama;
 procedure persiapan;
 
 procedure showNextDay(TJadwal : dbTayang; tgl : Tanggal);
-procedure selectMovie(var TKapasitas : dbKapasitas; var TPemesanan : dbPemesanan);
+procedure selectMovie(var TKapasitas : dbKapasitas; var TPemesanan : dbPemesanan; TFilm : dbFilm);
 
 procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);	
 {Procedure yang menampilkan film hari ini
   I.S : dT terdefinisi
   F.S : Menuliskan judul film yang tayang}
   
-procedure upcoming(dT: dbKapasitas;tgl:tanggal);	
+procedure upcoming(dT: dbTayang;tgl:tanggal);	
 {Procedure yang menampilkan film yang tayang minggu depan atau h+7
   I.S : dT terdefinisi
   F.S : Menuliskan judul film yang tayang}
@@ -48,11 +49,11 @@ procedure loginMember(T: dbMember; var idx: integer);
 {I.S : Terdefinisi
 F.S: idx > 0 sebagai penanda login}
 
-procedure payMember (T1 : dbPemesanan ; T2 : dbFilm ; T3: dbMember ; idx : integer); 
+procedure payMember (var T1 : dbPemesanan ; T2 : dbFilm ;var T3: dbMember ;var idx : integer); 
 {I.S : T1, T2, dan T3 terdefinisi
  F.S : pembayaran sukses}
  
-procedure payCreditCard(T1: dbPemesanan; T2: dbFilm);
+procedure payCreditCard(var T1: dbPemesanan; T2: dbFilm);
 {I.S : T1 dan T2 terdefinisi
 F.S : Jenis pembayaran terupdate}
  
@@ -108,7 +109,7 @@ begin
 	loadMember(dM);
 	loadPemesanan(dP);
 	loadTanggal(tgl);
-	delay(1000);
+	writeln('> File telah di load');
 end;
 
 procedure layarUtama;
@@ -129,7 +130,7 @@ end;
 procedure persiapan;
 begin
 	writeln('> Sedang malakukan proses loading..');
-	write('> Menyiapkan program');delay(300);write('.');delay(400);write('.');delay(700);writeln('.');
+	write('> Menyiapkan program');delay(300);write('.');delay(400);write('.');delay(400);writeln('.');delay(700);
 	writeln('> Semua telah siap!');
 end;
 
@@ -160,11 +161,11 @@ begin
 end;
 
 //memilih movie
-procedure selectMovie(var TKapasitas : dbKapasitas; var TPemesanan : dbPemesanan);
+procedure selectMovie(var TKapasitas : dbKapasitas; var TPemesanan : dbPemesanan; TFilm : dbFilm);
 var
 	film : string;
 	i, idx : integer;
-	tanggal, jam : string;
+	tanggal, jam, hari : string;
 	tgl, bln, thn, tiket, N : integer;
 	cek, stop, berhenti : boolean;
 	terminate : Char;
@@ -207,7 +208,7 @@ repeat
 			idx := i;
 			repeat	
 				i := idx;
-				cek :=false;
+				cek := false;
 				write('> Tanggal Tayang : ');
 				readln(tanggal);
 				val(copy(tanggal, 1 , 2),tgl);
@@ -220,7 +221,7 @@ repeat
 						cek := true;
 					end else 
 					begin
-						i := i +1;
+						i := i + 1;
 					end;
 				end;
 				if (cek = false) then
@@ -274,7 +275,8 @@ repeat
 					begin
 						berhenti:= false;
 					end;
-				end else stop := true;
+				end;
+				stop := True;
 			until stop=true or berhenti=true; // indeks pada film yang diinginkan sudah didapatkan
 		end;
 		
@@ -292,15 +294,43 @@ repeat
 				TKapasitas.Kapasitas[i].Kapasitas := TKapasitas.Kapasitas[i].Kapasitas - tiket;
 				N := TPemesanan.Neff;
 				TPemesanan.Neff := N + 1;
+				TPemesanan.Pemesanan[N+1].Nama:= film;
+				TPemesanan.Pemesanan[N+1].Jam:= jam;
+				TPemesanan.Pemesanan[N+1].Tanggal:= tgl;
+				TPemesanan.Pemesanan[N+1].Bulan:= bln;
+				TPemesanan.Pemesanan[N+1].Tahun:= thn;
+				TPemesanan.Pemesanan[N+1].Jenis:= 'Belum Dibayar';
+				TPemesanan.Pemesanan[N+1].JumlahKursi := tiket;
+				TPemesanan.Pemesanan[N+1].No := TPemesanan.Neff;
+				hari := getDay(tgl, bln, thn);
+				cek := false;
+				i := 1;
+				if ((hari = 'Sabtu') or (hari = 'Minggu')) then
+				begin
+					while (i < TFilm.Neff) and (cek = False) do
+					begin
+						if TFilm.Film[i].Nama = film then
+						begin
+							cek := True;
+						end else i := i +1;
+					end;
+					TPemesanan.Pemesanan[N+1].Total := (TFilm.Film[i].hEnd) * tiket;
+				end else
+				begin
+					TPemesanan.Pemesanan[N+1].Total := (TFilm.Film[i].hDay) * tiket;
+				end;
+				
 				write('> Pemesanan sukses, nomor pemesanan Anda adalah: ' );
-				if N < 10 then writeln('00',N) else
-				if (N<100) then writeln('0',N) else
-				writeln(N);
+				if TPemesanan.Neff < 10 then writeln('00',TPemesanan.Neff) else
+				if (TPemesanan.Neff<100) then writeln('0',TPemesanan.Neff) else
+				writeln(TPemesanan.Neff);
 			end;
 		writeln('> Apakah Anda Ingin Melanjutkan Pemesanan?');
-		write('> Y/N : '); readln(terminate);	
+		write('> Y/N : '); readln(terminate);
+		if terminate='N' then berhenti := true else berhenti:=false;	
 		end;
 until (berhenti = True);
+
 end;
 
 procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);
@@ -316,7 +346,7 @@ Begin
 	Begin  
 		If (tgl.Tanggal=dT.Kapasitas[i].Tanggal) and (tgl.Bulan=dT.Kapasitas[i].Bulan) and (tgl.Tahun=dT.Kapasitas[i].Tahun) then
 		Begin
-			Writeln('>',dT.Kapasitas[i].Nama);
+			Writeln('> ',dT.Kapasitas[i].Nama);
 			i:=i+1;
 			while (dT.Kapasitas[i].Nama=dT.Kapasitas[i-1].Nama) and (i<=dT.Neff) do
 			i:=i+1;
@@ -326,33 +356,45 @@ Begin
 	End;
 End;
 
-procedure upcoming(dT: dbTayang;tgl:tanggal);
+procedure upcoming(dT: dbTayang; tgl: Tanggal);
 
 {Kamus}
 Var
-  j, i :integer;
+  i, j, a :integer;
   
 {Algoritma}
 Begin
-	j:=7;
-	while j<=14 do
+	a := 0;
+	tgl:=afterXDay(tgl,7);
+	writeln('> Film yang akan tayang :');
+	for j:=1 to 7 do
 	Begin
-		tgl:=afterXDay(tgl,j);
+		tgl:=afterXDay(tgl,1);
 		i:=1;
 		While (i<=dT.Neff) do
-		Begin  
+		Begin
 			If (tgl.Tanggal=dT.Tayang[i].Tanggal) and (tgl.Bulan=dT.Tayang[i].Bulan) and (tgl.Tahun=dT.Tayang[i].Tahun) then
 			Begin
-				Writeln('>',dT.Tayang[i].Nama);
+				write('> ');
+				writeTanggal(tgl);
+				Writeln('> ',dT.Tayang[i].Nama);
+				writeln('>');
 				i:=i+1;
 				while (dT.Tayang[i].Nama=dT.Tayang[i-1].Nama) and (i<=dT.Neff) do
-				i:=i+1;
+				begin
+					i:=i+1;
+				end;
+				a := a+1;
 			End
-		Else
-			i:=i+1;
-		End;End;
-		j:=j+1;
+			Else
+				i:=i+1;
+		End;
 	End;
+	if a=0 then
+	begin
+		writeln('> Tidak ada');
+	end;
+End;
 
 //F-15Exit
 procedure F15Exit (T1 : dbKapasitas; T3 : dbMember; T2 : dbPemesanan);
@@ -362,11 +404,11 @@ procedure F15Exit (T1 : dbKapasitas; T3 : dbMember; T2 : dbPemesanan);
 var
 	i,j,k : integer;
 	fin1,fin2,fin3 : text;
-	tanggal, bulan, tahun, nomor, total, saldo, kapasitas, jumlahkursi : string;
+	tanggal, bulan, tahun, nomor, total, saldo, kapasitas, jumlahkursi, no : string;
 
 {Algoritma}
 begin
-		assign(fin1, 'database/kapasitas.txt');
+		assign(fin1, 'database\kapasitas.txt');
 		rewrite(fin1);
 		for i := 1 to T1.Neff do
 		begin
@@ -376,28 +418,39 @@ begin
 			Str(T1.Kapasitas[i].Kapasitas, kapasitas);
 			writeln(fin1, T1.Kapasitas[i].Nama,' | ',tanggal,' | ',bulan,' | ',tahun,' | ',T1.Kapasitas[i].Jam,' | ',kapasitas,' | ')
 		end;
-		assign(fin3, 'database/member.txt');
+		assign(fin3, 'database\member.txt');
 		rewrite(fin3);
 		for k := 1 to T3.Neff do
 		begin
 			Str(T3.Member[k].Saldo, saldo);
 			writeln(fin3, T3.Member[k].UserName,' | ',T3.Member[k].Password,' | ',saldo,' | ')
 		end;
-		assign(fin2, 'database/datapemesanan.txt');
+		assign(fin2, 'database\pemesanan.txt');
 		rewrite(fin2);
 		for j := 1 to T2.Neff do
 		begin
-			Str(T2.Pemesanan[i].No, nomor);
-			Str(T2.Pemesanan[i].Tanggal, tanggal);
-			Str(T2.Pemesanan[i].Bulan, bulan);
-			Str(T2.Pemesanan[i].Tahun, tahun);
-			Str(T2.Pemesanan[i].Total, total);
-			Str(T2.Pemesanan[i].Jumlahkursi, jumlahkursi);
-			writeln(fin2, nomor,' | ',tanggal,' | ',bulan,' | ',tahun,' | ',T2.Pemesanan[i].Jam,' | ',jumlahkursi,' | ',total,' | ',T2.Pemesanan[i].Jenis,' | ')
+			Str(T2.Pemesanan[j].No, no);
+			if (T2.Pemesanan[j].No) < 10 then 
+				nomor := '00'+ no
+			else if (T2.Pemesanan[j].No < 100) then 
+				nomor := '0'+ no
+			else
+				nomor := no;
+			Str(T2.Pemesanan[j].Tanggal, tanggal);
+			Str(T2.Pemesanan[j].Bulan, bulan);
+			Str(T2.Pemesanan[j].Tahun, tahun);
+			Str(T2.Pemesanan[j].Total, total);
+			Str(T2.Pemesanan[j].Jumlahkursi, jumlahkursi);
+			writeln(fin2, nomor,' | ',T2.Pemesanan[j].Nama,' | ',tanggal,' | ',bulan,' | ',tahun,' | ',T2.Pemesanan[j].Jam,' | ',jumlahkursi,' | ',total,' | ',T2.Pemesanan[j].Jenis,' | ')
 		end;
 		close(fin1);
 		close(fin2);
 		close(fin3);
+		write('> Sedang menyimpan data'); delay(200);
+		write('.');delay(200);
+		write('.');delay(500);
+		writeln('.');delay(500);
+		writeln;
 end;
 //Procedur F13-loginMember
 	procedure loginMember(T: dbMember; var idx: integer);
@@ -460,7 +513,7 @@ end;
 	end;
 	
 //F11-payCreditCard
-procedure payCreditCard(var T1: dbPemesanan; T2: dbFilm);
+	procedure payCreditCard(var T1: dbPemesanan; T2: dbFilm);
 	//kamus lokal
 	var
 	c, idx, DD, MM, YY : integer;
@@ -508,7 +561,7 @@ procedure payCreditCard(var T1: dbPemesanan; T2: dbFilm);
 	end;
 		
 //F12-payMember
-procedure payMember (var T1 : dbPemesanan ; T2 : dbFilm ;var T3: dbMember ;var idx : integer); 
+	procedure payMember (var T1 : dbPemesanan ; T2 : dbFilm ;var T3: dbMember ;var idx : integer); 
 	//kamus lokal
 	var
 	sisaSaldo, hargamember, harga : longint;
@@ -570,5 +623,6 @@ procedure payMember (var T1 : dbPemesanan ; T2 : dbFilm ;var T3: dbMember ;var i
 			end;
 		end;	
 	end;
+	
 	
 end.

@@ -12,7 +12,7 @@ var
 	tgl : Tanggal;
 	Fx : string;
 	stopProgram : boolean;
-	idx : integer;
+	idx, x : integer;
 	
 begin
 	// -- Proses Inisiasi -- //
@@ -28,16 +28,19 @@ begin
 		case Fx of
 			'load'			: loadFile(tFilm,tTayang,tKapasitas,tMember,tPemesanan,tgl);
 			'nowPlaying'	: nowPlaying(tKapasitas,tgl);
-			'upcoming'		: upcoming(tKapasitas,tgl);
+			'upcoming'		: upcoming(tTayang,tgl);
 			'schedule'		: schedule(tTayang);
 			'genreFilter'	: genreFilter(tFilm);
 			'ratingFilter'	: ratingFilter(tFilm);
 			'searchMovie'	: searchMovie(tFilm);
 			'showMovie'		: showMovie(tFilm);
 			'showNextDay'	: showNextDay(TTayang, tgl);
-			'selectMovie'	: selectMovie(TKapasitas, TPemesanan); 
+			'selectMovie'	: selectMovie(TKapasitas, TPemesanan, TFilm); 
 			'payCreditCard' : payCreditCard(tPemesanan,tFilm);
-			'payMember'		: payMember(tPemesanan, tFilm, tMember, idx);
+			'payMember'		: 
+			begin
+				payMember(tPemesanan, tFilm, tMember, idx);
+			end;
 			'loginMember'	: loginMember(tMember, idx);
 			'register'		: 
 			begin
@@ -47,10 +50,20 @@ begin
 				writeln('> Selamat Akun Member anda sudah terdaftar');
 			end;
 
-			'exit'			: begin
-									F15Exit(tKapasitas,tMember,tPemesanan);
-									stopProgram:=true;
-							  end;
+			'exit'			: 
+			begin
+				F15Exit(tKapasitas,tMember,tPemesanan);
+				stopProgram:=true;
+			end;
+
+			//Fungsi Tambahan
+			'cekTanggal'	: writeTanggal(tgl);
+			'tambahTanggal'	: 
+			begin
+				write('> Input X: ');readln(x);
+				tgl:=afterXDay(tgl,x);
+			end;
+			
 		end; 
 		write('press Enter to continue..');readln();
 	until stopProgram;

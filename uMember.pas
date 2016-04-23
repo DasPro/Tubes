@@ -1,6 +1,8 @@
 unit uMember;
 
 interface
+
+const Nmax = 1000;
 type Member = record
 		UserName,
 		Password : string;
@@ -8,7 +10,7 @@ type Member = record
 end;
 
 type dbMember = record
-		Member : array[1..1000] of Member;
+		Member : array[1..Nmax] of Member;
 		Neff : integer;
 end;
 

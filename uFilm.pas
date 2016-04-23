@@ -3,6 +3,7 @@ unit uFilm;
 interface
 uses uKata;
 
+const Nmax = 1000;
 type Film = record
     Nama:string;
     Genre:string;
@@ -14,11 +15,10 @@ type Film = record
 end;
 
 type dbFilm = record
-	Film : array[1..1000] of Film;
+	Film : array[1..Nmax] of Film;
 	Neff : integer;
 end;
 
-procedure load (var f:text;p:string);
 procedure loadFilm(var dF: dbFilm);
 {* procedure untuk me-load data dari File external dataFilm.txt 
    dan dimasukkan kedalam variable internal
@@ -40,12 +40,6 @@ procedure showMovie(TFilm : dbFilm);
 
 implementation
 // -------------- Load untuk dataFilm.txt --------------- //
-procedure load (var f:text;p:string);
-begin
-	assign(f,p);
-	reset(f);
-end;
-
 procedure loadFilm(var dF: dbFilm);
 var 
 	dfilm: text;
@@ -53,7 +47,8 @@ var
 	pos1,l,i,j:integer;
 begin
 	j:=1;
-	load(dfilm,'database\datafilm.txt');
+	assign(dfilm,'database\datafilm.txt');
+	reset(dfilm);
 	while not Eof(dfilm) do
 	begin
 		readln(dfilm,f);
@@ -133,20 +128,33 @@ end;
 	var
 		judul : string;
 		i : integer;
-
+		found : boolean;
+		
 	begin
-		write('> Judul Film : ');
-		readln(judul);
-		i := 1;
-		while (i<TFilm.Neff) and (judul = TFilm.Film[i].nama) do
-		begin
-			i := i+1;
-		end;
-		writeln('> ', TFilm.Film[i-1].nama);
-		writeln('> ', TFilm.Film[i-1].genre); 
-		writeln('> ', TFilm.Film[i-1].Rating);
-		writeln('> ', TFilm.Film[i-1].Durasi);
-		writeln('> ', TFilm.Film[i-1].Sin);
+		repeat
+			write('> Judul Film : ');
+			readln(judul);
+			i := 1;
+			found := False;
+			while (i <= TFilm.Neff) and (found=False) do
+			begin
+				if (lowAll(judul)=lowAll(TFilm.Film[i].Nama)) then
+					found := True
+				else
+					i := i + 1;
+			end;
+			if (found = False) then
+			begin
+				writeln('Masukkan judul film salah');
+			end else
+			begin
+			writeln('> ', TFilm.Film[i].Nama);
+			writeln('> ', TFilm.Film[i].Genre); 
+			writeln('> ', TFilm.Film[i].Rating);
+			writeln('> ', TFilm.Film[i].Durasi);
+			writeln('> ', TFilm.Film[i].Sin);
+			end;
+		until (found=True);
 	end;
 
 end.

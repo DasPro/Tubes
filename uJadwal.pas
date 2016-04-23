@@ -3,6 +3,7 @@ unit uJadwal;
 interface
 uses uKata;
 
+const Nmax = 1000;
 type Tayang = record
 		Nama,
 		Jam : string;
@@ -13,7 +14,7 @@ type Tayang = record
 end;
 
 type dbTayang = record
-	Tayang : array[1..1000] of Tayang;
+	Tayang : array[1..Nmax] of Tayang;
 	Neff : integer;
 end;
 
@@ -100,9 +101,12 @@ var
 	j, i : integer;
 	h,b,y : integer;
 	dd,mm,yy : integer;
+	cek : boolean;
 	
 {Algoritma}
 begin
+	cek := False;
+repeat
 	y := T.Tayang[idx].Tahun;
 	b := T.Tayang[idx].Bulan;
 	h := T.Tayang[idx].Tanggal;
@@ -122,12 +126,21 @@ begin
 				begin
 					for i := idx to (idx+3) do
 					begin
+						cek := true;
 						if (lowAll(T.Tayang[i].Nama)=lowAll(f)) then
 							writeln('> ',T.Tayang[i].Jam);
 					end;
 				end;
 			end;
 		end;
+		if cek=false then 
+		begin
+			writeln('> Jadwal tak tersedia ');
+			writeln('> Ulangi input tanggal');
+			write('> Tanggal tayang : ');
+			readln(tanggal);
+		end;
+until cek = True;
 end;
 
 procedure schedule( T : dbTayang);

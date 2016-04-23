@@ -1,6 +1,8 @@
 unit uKapasitas;
 
 interface
+
+const Nmax = 1000;
 type Kapasitas = record
 		Nama,
 		Jam : string;
@@ -11,7 +13,7 @@ type Kapasitas = record
 end;
 
 type dbKapasitas = record
-	Kapasitas : array[1..1000] of Kapasitas;
+	Kapasitas : array[1..Nmax] of Kapasitas;
 	Neff : integer;
 end;
 
