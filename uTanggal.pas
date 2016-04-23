@@ -201,7 +201,7 @@ end;
 
 	procedure writeTanggal(tgl :Tanggal);
 	begin
-		writeln(getDay(tgl.Tanggal, tgl.Bulan, tgl.Tahun),', ', tgl.hari , ' ' , nameBulan(tgl.bulan) ,' ', tgl.tahun);
+		writeln(getDay(tgl.Tanggal, tgl.Bulan, tgl.Tahun),', ', tgl.Tanggal , ' ' , nameBulan(tgl.bulan) ,' ', tgl.tahun);
 	end;
 
 	function isTanggalValid(Tanggal, Bulan, Tahun :integer) : boolean;
