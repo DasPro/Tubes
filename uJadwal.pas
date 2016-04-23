@@ -88,10 +88,7 @@ begin
 			cek := True;
 		i := i + 1;
 	end;
-	if (cek=True) then
-		idx := i - 1
-	else
-		idx := 0;
+	idx := i - 1;
 end;
 	
 procedure TulisJam (idx : integer; f : string; T : dbTayang; tanggal : string);
@@ -101,12 +98,9 @@ var
 	j, i : integer;
 	h,b,y : integer;
 	dd,mm,yy : integer;
-	cek : boolean;
 	
 {Algoritma}
 begin
-	cek := False;
-repeat
 	y := T.Tayang[idx].Tahun;
 	b := T.Tayang[idx].Bulan;
 	h := T.Tayang[idx].Tanggal;
@@ -114,10 +108,7 @@ repeat
 	val(copy(tanggal,1,2), dd);
 	val(copy(tanggal,4,2), mm);
 	val(copy(tanggal,7,4), yy);
-	if (mm<10) then
-		writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal ',dd,'-0',mm,'-',yy,' :')
-	else
-		writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal ',dd,'-',mm,'-',yy,' :');
+	writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal ',dd,'-0',mm,'-',yy,' :');
 	if (yy = y) and (mm = b) then
 		begin
 			for j := h  to (h+6) do
@@ -126,48 +117,34 @@ repeat
 				begin
 					for i := idx to (idx+3) do
 					begin
-						cek := true;
 						if (lowAll(T.Tayang[i].Nama)=lowAll(f)) then
 							writeln('> ',T.Tayang[i].Jam);
 					end;
 				end;
 			end;
 		end;
-		if cek=false then 
-		begin
-			writeln('> Jadwal tak tersedia ');
-			writeln('> Ulangi input tanggal');
-			write('> Tanggal tayang : ');
-			readln(tanggal);
-		end;
-until cek = True;
 end;
 
 procedure schedule( T : dbTayang);
 
 {Kamus}
 var
-	tanggal, f : string;
+	tanggal : string;
+	f	: string;
 	index	: integer;
 		
 {Algoritma}
 begin
-	repeat
-		write('> Film : ');
-		readln(f);
-		write('> Tanggal tayang : ');
-		readln(tanggal);
-		
-		
-		//Pencarian Film dan Penampilan Jam
-		index := idx(f,T);
-		if(index=0) then
-		begin
-			writeln('Masukkan nama film atau tanggal tayang salah');
-			writeln('Silahkan ulang masukkan');
-		end else
-			TulisJam(index,f,T,tanggal);
-	until (index>0) 
+	write('> Film : ');
+	readln(f);
+	write('> Tanggal tayang : ');
+	readln(tanggal);
+	
+	
+	//Pencarian Film dan Penampilan Jam
+	index := idx(f,T);
+	TulisJam(index,f,T,tanggal);
+	
 end;
 	
 end.

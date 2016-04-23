@@ -76,26 +76,47 @@ end;
 	//F5-genreFilter
 	procedure genreFilter(dF: dbFilm);
 	var
-		pilihan: string; i: integer;
+		pilihan: string; 
+		i: integer; 
+		found: boolean;
 	begin
+		found:=false;
 		write('> Genre: ');readln(pilihan);
 		for i:=1 to dF.Neff do
 		begin
 			if lowAll(pilihan)=lowAll(dF.Film[i].Genre) then
+			begin
 				writeln('> ',dF.Film[i].nama);
+				found:=true;
+			end;
+		end;
+		
+		if found=false then
+		begin
+			writeln('> Ganre yang di input tidak ada yang sesuai.');
 		end;
 	end;
 
 	//F6-ratingFilter
 	procedure ratingFilter(dF: dbFilm);
 	var 
-		pilihan: string; i: integer;
+		pilihan: string; 
+		i: integer;
+		found: boolean;
 	begin
+		found:=false;
 		write('> Rating Viewer: ');readln(pilihan);
 		for i:=1 to dF.Neff do
 		begin
 			if lowAll(pilihan)=lowAll(dF.Film[i].Rating) then
+			begin
 				writeln('> ',dF.Film[i].nama);
+				found := true;
+			end;
+		end;
+		if found=false then
+		begin
+			writeln('> Rating Viewer yang di input tidak ada yang sesuai.');
 		end;
 	end;
 
@@ -108,7 +129,7 @@ end;
 		
 	{Algoritma}
 	begin
-		write('> Masukkan pencarian berdasarkan sinopsis, judul, atau genre : ');
+		writeln('> Masukkan pencarian berdasarkan sinopsis, judul, atau genre : ');
 		readln(input);
 		writeln('> Daftar film yang sesuai dengan pencarian : ');
 		//Mekanisme Pencarian Daftar Film
@@ -128,33 +149,20 @@ end;
 	var
 		judul : string;
 		i : integer;
-		found : boolean;
-		
+
 	begin
-		repeat
-			write('> Judul Film : ');
-			readln(judul);
-			i := 1;
-			found := False;
-			while (i <= TFilm.Neff) and (found=False) do
-			begin
-				if (lowAll(judul)=lowAll(TFilm.Film[i].Nama)) then
-					found := True
-				else
-					i := i + 1;
-			end;
-			if (found = False) then
-			begin
-				writeln('Masukkan judul film salah');
-			end else
-			begin
-			writeln('> ', TFilm.Film[i].Nama);
-			writeln('> ', TFilm.Film[i].Genre); 
-			writeln('> ', TFilm.Film[i].Rating);
-			writeln('> ', TFilm.Film[i].Durasi);
-			writeln('> ', TFilm.Film[i].Sin);
-			end;
-		until (found=True);
+		write('> Judul Film : ');
+		readln(judul);
+		i := 1;
+		while (i <= TFilm.Neff) and (judul <> TFilm.Film[i].nama) do
+		begin
+			i := i+1;
+		end;
+		writeln('> ', TFilm.Film[i-1].Nama);
+		writeln('> ', TFilm.Film[i-1].Genre); 
+		writeln('> ', TFilm.Film[i-1].Rating);
+		writeln('> ', TFilm.Film[i-1].Durasi);
+		writeln('> ', TFilm.Film[i-1].Sin);
 	end;
 
 end.

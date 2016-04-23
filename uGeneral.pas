@@ -2,7 +2,7 @@ unit uGeneral;
 
 interface
 
-uses crt,sysutils,uJadwal,uTanggal,uMember,uKapasitas,uFilm;
+uses crt,sysutils,uJadwal,uTanggal,uMember,uKapasitas,uFilm,uKata;
 
 const Nmax = 1000;
 type Pemesanan = record
@@ -170,7 +170,7 @@ var
 	cek, stop, berhenti : boolean;
 	terminate : Char;
 begin
-repeat	
+	repeat	
 		berhenti := false;
 		stop := false;
 		repeat
@@ -180,7 +180,7 @@ repeat
 			cek := False;
 			while (i < TKapasitas.Neff) and (cek = False) do
 			begin
-				if (film = TKapasitas.Kapasitas[i].nama) then
+				if (lowAll(film) = lowAll(TKapasitas.Kapasitas[i].nama)) then
 				begin
 					stop := true; cek:=true;
 				end else i:=i+1;
@@ -201,7 +201,7 @@ repeat
 					berhenti:=false;
 			end;
 		until (stop=true) or (berhenti=true); // indeks pertama dari judul film sudah ditemukan (i)	
-			
+				
 		if berhenti = false then
 		begin
 			stop := false;
@@ -214,7 +214,7 @@ repeat
 				val(copy(tanggal, 1 , 2),tgl);
 				val(copy(tanggal, 4, 2), bln);
 				val(copy(tanggal, 7, 4), thn);
-				while (cek = false) and (i <= TKapasitas.Neff) do
+				while (cek = false) and (i <= TKapasitas.Neff) and (lowall(TKapasitas.Kapasitas[i].Nama) = lowall(Film)) do
 				begin
 					if ((tgl = TKapasitas.Kapasitas[i].tanggal) and (bln = TKapasitas.Kapasitas[i].bulan) and (thn = TKapasitas.Kapasitas[i].tahun)) then
 					begin
@@ -230,11 +230,11 @@ repeat
 					writeln('> Apakah anda ingin melanjutkan pencarian');
 					write('> Y/N : ');
 					readln(terminate);
-					if (terminate='N') then
+					if (low(terminate)='n') then
 					begin
 						berhenti:=true;
 					end else 
-					if (terminate='Y') then 
+					if (low(terminate)='y') then 
 					begin
 						berhenti:= false;
 					end;
@@ -243,93 +243,98 @@ repeat
 			until ((stop = true) or (berhenti = true)); // indeks pada tanggal yang benar sudah didapatkan
 			end;
 		
-		if berhenti = false then
-		begin
-			//setting jam tayang
-			stop := false;
-			idx :=i;
-			repeat
-				cek := false;
-				write('> Jam Tayang : '); readln(jam);
-				while (cek = false) and (i <= TKapasitas.Neff) do
-				begin
-					if (jam = TKapasitas.Kapasitas[i].Jam) then
+			if berhenti = false then
+			begin
+				//setting jam tayang
+				stop := false;
+				idx :=i;
+				repeat
+					i := idx;
+					cek := false;
+					write('> Jam Tayang : '); readln(jam);
+					while (cek = false) and (i <= TKapasitas.Neff) and (lowall(film) = lowall(TKapasitas.Kapasitas[i].Nama)) do
 					begin
-						cek := true;
-					end else 
-					begin
-						i := i +1;
-					end;	
-				end;
-				if cek = false then
-				begin
-					writeln('> input jam tayang salah, ulangi input jam tayang!');
-					writeln('> Apakah anda ingin melanjutkan pencarian');
-					write('> Y/N : ');
-					readln(terminate);
-					if (terminate='N') then
-					begin
-						berhenti:=true;
-					end else 
-					if (terminate='Y') then 
-					begin
-						berhenti:= false;
-					end;
-				end;
-				stop := True;
-			until stop=true or berhenti=true; // indeks pada film yang diinginkan sudah didapatkan
-		end;
-		
-		if berhenti=false then
-		begin
-			//pemrosesan pembelian kursi
-			writeln('> Kapasitas Tersisa ', TKapasitas.Kapasitas[i].Kapasitas ,' orang');
-			write('> Masukkan jumlah tiket yang ingin dibeli : '); readln(tiket);
-			if tiket > 0 then
-			begin 
-				while (tiket > TKapasitas.Kapasitas[i].Kapasitas) or (tiket <= 0) do
-				begin
-					write('> Masukkan kembali jumlah tiket yang ingin dibeli : '); readln(tiket);
-				end;
-				TKapasitas.Kapasitas[i].Kapasitas := TKapasitas.Kapasitas[i].Kapasitas - tiket;
-				N := TPemesanan.Neff;
-				TPemesanan.Neff := N + 1;
-				TPemesanan.Pemesanan[N+1].Nama:= film;
-				TPemesanan.Pemesanan[N+1].Jam:= jam;
-				TPemesanan.Pemesanan[N+1].Tanggal:= tgl;
-				TPemesanan.Pemesanan[N+1].Bulan:= bln;
-				TPemesanan.Pemesanan[N+1].Tahun:= thn;
-				TPemesanan.Pemesanan[N+1].Jenis:= 'Belum Dibayar';
-				TPemesanan.Pemesanan[N+1].JumlahKursi := tiket;
-				TPemesanan.Pemesanan[N+1].No := TPemesanan.Neff;
-				hari := getDay(tgl, bln, thn);
-				cek := false;
-				i := 1;
-				if ((hari = 'Sabtu') or (hari = 'Minggu')) then
-				begin
-					while (i < TFilm.Neff) and (cek = False) do
-					begin
-						if TFilm.Film[i].Nama = film then
+						if (jam = TKapasitas.Kapasitas[i].Jam) then
 						begin
-							cek := True;
-						end else i := i +1;
+							cek := true;
+						end else 
+						begin
+							i := i +1;
+						end;	
 					end;
-					TPemesanan.Pemesanan[N+1].Total := (TFilm.Film[i].hEnd) * tiket;
-				end else
-				begin
-					TPemesanan.Pemesanan[N+1].Total := (TFilm.Film[i].hDay) * tiket;
-				end;
-				
-				write('> Pemesanan sukses, nomor pemesanan Anda adalah: ' );
-				if TPemesanan.Neff < 10 then writeln('00',TPemesanan.Neff) else
-				if (TPemesanan.Neff<100) then writeln('0',TPemesanan.Neff) else
-				writeln(TPemesanan.Neff);
+					if cek = false then
+					begin
+						writeln('> input jam tayang salah, ulangi input jam tayang!');
+						writeln('> Apakah anda ingin melanjutkan pencarian');
+						write('> Y/N : ');
+						readln(terminate);
+						if (low(terminate)='n') then
+						begin
+							berhenti:=true;
+							stop:= true;
+						end else 
+						if (low(terminate)='y') then 
+						begin
+							berhenti:= false;
+						end;
+					end else 
+						stop := true;
+				until stop=true or berhenti=true; // indeks pada film yang diinginkan sudah didapatkan
 			end;
-		writeln('> Apakah Anda Ingin Melanjutkan Pemesanan?');
-		write('> Y/N : '); readln(terminate);
-		if terminate='N' then berhenti := true else berhenti:=false;	
+			
+			if berhenti=false then
+			begin
+				//pemrosesan pembelian kursi
+				writeln('> Kapasitas Tersisa ', TKapasitas.Kapasitas[i].Kapasitas ,' orang');
+				write('> Masukkan jumlah tiket yang ingin dibeli : '); readln(tiket);
+				if tiket > 0 then
+				begin 
+					while (tiket > TKapasitas.Kapasitas[i].Kapasitas) or (tiket <= 0) do
+					begin
+						write('> Masukkan kembali jumlah tiket yang ingin dibeli : '); readln(tiket);
+					end;
+					TKapasitas.Kapasitas[i].Kapasitas := TKapasitas.Kapasitas[i].Kapasitas - tiket;
+					N := TPemesanan.Neff;
+					TPemesanan.Neff := N + 1;
+					TPemesanan.Pemesanan[N+1].Nama:= TKapasitas.Kapasitas[i].Nama;
+					TPemesanan.Pemesanan[N+1].Jam:= jam;
+					TPemesanan.Pemesanan[N+1].Tanggal:= tgl;
+					TPemesanan.Pemesanan[N+1].Bulan:= bln;
+					TPemesanan.Pemesanan[N+1].Tahun:= thn;
+					TPemesanan.Pemesanan[N+1].Jenis:= 'Belum Dibayar';
+					TPemesanan.Pemesanan[N+1].JumlahKursi := tiket;
+					TPemesanan.Pemesanan[N+1].No := TPemesanan.Neff;
+					hari := getDay(tgl, bln, thn);
+					cek := false;
+					i := 1;
+					if ((hari = 'Sabtu') or (hari = 'Minggu')) then
+					begin
+						while (i < TFilm.Neff) and (cek = False) do
+						begin
+							if TFilm.Film[i].Nama = film then
+							begin
+								cek := True;
+							end else i := i +1;
+						end;
+						TPemesanan.Pemesanan[N+1].Total := (TFilm.Film[i].hEnd) * tiket;
+					end else
+					begin
+						TPemesanan.Pemesanan[N+1].Total := (TFilm.Film[i].hDay) * tiket;
+					end;
+					
+					write('> Pemesanan sukses, nomor pemesanan Anda adalah: ' );
+					if TPemesanan.Neff < 10 then writeln('00',TPemesanan.Neff) else
+					if (TPemesanan.Neff<100) then writeln('0',TPemesanan.Neff) else
+					writeln(TPemesanan.Neff);
+				end;
+			writeln('> Apakah Anda Ingin Melanjutkan Pemesanan?');
+			write('> Y/N : '); readln(terminate);
+			if low(terminate)='n' then 
+				berhenti := true 
+			else 
+				berhenti:=false;	
 		end;
-until (berhenti = True);
+	until (berhenti = True);
 
 end;
 
