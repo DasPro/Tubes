@@ -41,7 +41,7 @@ begin
 			'loginMember'	: loginMember(tMember, idx);
 			'register'		: 
 			begin
-				register(tMember);
+				F14Register(tMember);
 				clrscr; 
 				layarUtama;
 				writeln('> Selamat Akun Member anda sudah terdaftar');
