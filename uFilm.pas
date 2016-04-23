@@ -40,7 +40,10 @@ procedure ratingFilter(dF: dbFilm);		//F6-ratingFilter
 {*	procedure untuk menampilkan List Judul Film berdasarkan RatingViewer.
 I.S	: dataFilm sudah Siap. RatingViewer di Input oleh User
 F.S	: menampilkan List Judul Film yang sesuai dengan RatingViewer Input dari User *}
-
+procedure searchMovie(dF : dbFilm); 	//F7-searchMovie
+{*	procedure untuk mencari keyword berdasarkan Nama Film, Genre Film, Sinopsis.
+I.S	: dataFilm sudah terdefinisi, input dan f telah terdefinisi
+F.S : menampilkan Nama Film yang sesuai dengan keyword yang dimasukkan	*}
 
 implementation
 // ------------------------------------------------------ //
@@ -230,5 +233,27 @@ end;
 	end;
 
 	//F7-searchMovie
+	procedure searchMovie(dF : dbFilm);
+	{Kamus}
+	var
+		i,idx1, idx2, idx3 : integer;
+		input : string;
+		
+	{Algoritma}
+	begin
+		write('> Masukkan Pencarian : ');
+		readln(input);
+		writeln('> Daftar Film : ');
+		//Mekanisme Pencarian Daftar Film
+		for i:= 1 to dF.Neff do
+		begin
+			idx1 := pos(lowAll(input), lowAll(dF.Film[i].Nama));
+			idx2 := pos(lowAll(input), lowAll(dF.Film[i].Genre));
+			idx3 := pos(lowAll(input), lowAll(dF.Film[i].Sin));
+			if ( idx1<>0 ) or ( idx2<>0 ) or ( idx3<>0 ) then
+				writeln('> ',dF.Film[i].Nama);
+		end;
+	end;
+	
 	//F8-showMovie
 end.
