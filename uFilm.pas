@@ -1,6 +1,7 @@
 unit uFilm;
 
 interface
+uses uKata;
 
 type Film = record
     Nama:string;
@@ -16,15 +17,6 @@ type dbFilm = record
 	Film : array[1..1000] of Film;
 	Neff : integer;
 end;
-
-// untuk pengatur karakter String (pembantu untuk search) //
-	function low(C : char) : Char;				// pengecil Char
-	function cap(C : char) : Char;				// pengkapital Char
-	function lowAll(Str :String) : string;		// pengecil seluruh String
-	function capAll(Str :String) : string;		// pengkapital seluruh String
-	function capFirst(Str :string) : string;	// pengkapital Huruf diawal String
-	function capEach(Str :String) : string;		// pengkapital setiap Kata
-// ------------------------------------------------------ //
 
 procedure load (var f:text;p:string);
 procedure loadFilm(var dF: dbFilm);
@@ -44,128 +36,9 @@ procedure searchMovie(dF : dbFilm); 	//F7-searchMovie
 {*	procedure untuk mencari keyword berdasarkan Nama Film, Genre Film, Sinopsis.
 I.S	: dataFilm sudah terdefinisi, input dan f telah terdefinisi
 F.S : menampilkan Nama Film yang sesuai dengan keyword yang dimasukkan	*}
+procedure showMovie(TFilm : dbFilm);
 
 implementation
-// ------------------------------------------------------ //
-// untuk pengatur karakter String (pembantu untuk search) //
-function low(C : char) : Char;
-begin
-case C of
-	'A' : C:='a';
-	'B' : C:='b';
-	'C' : C:='c';
-	'D' : C:='d';
-	'E' : C:='e';
-	'F' : C:='f';
-	'G' : C:='g';
-	'H' : C:='h';
-	'I' : C:='i';
-	'J' : C:='j';
-	'K' : C:='k';
-	'L' : C:='l';
-	'M' : C:='m';
-	'N' : C:='n';
-	'O' : C:='o';
-	'P' : C:='p';
-	'Q' : C:='q';
-	'R' : C:='r';
-	'S' : C:='s';
-	'T' : C:='t';
-	'U' : C:='u';
-	'V' : C:='v';
-	'W' : C:='w';
-	'X' : C:='x';
-	'Y' : C:='y';
-	'Z' : C:='z';
-end;
-
-low:=C;
-end;
-
-function cap(C : char) : Char;
-begin
-case C of
-	'a' : C:='A';
-	'b' : C:='B';
-	'c' : C:='C';
-	'd' : C:='D';
-	'e' : C:='E';
-	'f' : C:='F';
-	'g' : C:='G';
-	'h' : C:='H';
-	'i' : C:='I';
-	'j' : C:='J';
-	'k' : C:='K';
-	'l' : C:='L';
-	'm' : C:='M';
-	'n' : C:='N';
-	'o' : C:='O';
-	'p' : C:='P';
-	'q' : C:='Q';
-	'r' : C:='R';
-	's' : C:='S';
-	't' : C:='T';
-	'u' : C:='U';
-	'v' : C:='V';
-	'w' : C:='W';
-	'x' : C:='X';
-	'y' : C:='Y';
-	'z' : C:='Z';
-end;
-
-cap:=C;
-end;
-
-function lowAll(Str :String) : string;
-var n, i : longint;
-begin
-	n:=length(Str);
-	for i:=1 to n do
-		Str[i]:=low(Str[i]);
-	lowAll:=Str;
-end;
-
-function capAll(Str :String) : string;
-var n, i : longint;
-begin
-	n:=length(Str);
-	for i:=1 to n do
-		Str[i]:=cap(Str[i]);
-	capAll:=Str;
-end;
-
-function capFirst(Str :String) : string;
-begin
-	Str:=lowAll(Str);
-	Str[1]:=cap(Str[1]);
-	capFirst:=Str;
-end;
-
-function capEach(Str :String) : string;
-var n,i,m,j : longint;
-	tempPos : array[1..256] of integer;
-begin
-n:= length(Str);
-j:=1;
-Str:=lowAll(Str);
-	for i:=1 to n do
-	begin
-		if Str[i]=' ' then
-		begin
-			tempPos[j]:=i+1;
-			j:=j+1;
-		end;
-		
-		Str[1]:=cap(Str[1]);
-		m:=j;
-		for j:=1 to m do
-			Str[tempPos[j]] := cap(Str[tempPos[j]]);
-		
-	end;
-capEach:=Str;
-end;
-// ------------------------------------------------------ //
-
 // -------------- Load untuk dataFilm.txt --------------- //
 procedure load (var f:text;p:string);
 begin
@@ -203,7 +76,6 @@ begin
     end;
     dF.Neff:=j-1;
 	close(dfilm);
-	writeln('> Data Film sudah di load, banyak Film ada ',dF.Neff);
 end;
 
 	//F5-genreFilter
@@ -256,4 +128,25 @@ end;
 	end;
 	
 	//F8-showMovie
+	Procedure showMovie(TFilm : dbFilm);
+
+	var
+		judul : string;
+		i : integer;
+
+	begin
+		write('> Judul Film : ');
+		readln(judul);
+		i := 1;
+		while (i<TFilm.Neff) and (judul = TFilm.Film[i].nama) do
+		begin
+			i := i+1;
+		end;
+		writeln('> ', TFilm.Film[i-1].nama);
+		writeln('> ', TFilm.Film[i-1].genre); 
+		writeln('> ', TFilm.Film[i-1].Rating);
+		writeln('> ', TFilm.Film[i-1].Durasi);
+		writeln('> ', TFilm.Film[i-1].Sin);
+	end;
+
 end.

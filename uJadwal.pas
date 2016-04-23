@@ -1,6 +1,8 @@
 unit uJadwal;
 
 interface
+uses uKata;
+
 type Tayang = record
 		Nama,
 		Jam : string;
@@ -31,15 +33,6 @@ procedure schedule( T : dbTayang);
 	I.S : T terdefinisi
 	F.S : Menuliskan Jam Tayang Film kepada user	}
 	
-procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);	
-{Procedure yang menampilkan film hari ini
-  I.S : dT terdefinisi
-  F.S : Menuliskan judul film yang tayang}
-  
-procedure upcoming(dT: dbKapasitas;tgl:tanggal);	
-{Procedure yang menampilkan film yang tayang minggu depan atau h+7
-  I.S : dT terdefinisi
-  F.S : Menuliskan judul film yang tayang}
 	
 implementation
 procedure load (var f:text;p:string);
@@ -76,18 +69,6 @@ begin
     end;
     dT.Neff:=j-1;
 	close(dTayang);
-	writeln('> Data JadwalTayang sudah di load, banyak Jadwal Tayang ada ',dT.Neff);
-
-    begin
-    	writeln('Nama :',dT.Tayang[1].Nama);
-    	writeln('Jam Tayang :',dT.Tayang[1].Jam);
-    	writeln('Tanggal :',dT.Tayang[1].Tanggal);
-    	writeln('Bulan :',dT.Tayang[1].Bulan);
-    	writeln('Tahun :',dT.Tayang[1].Tahun);
-    	writeln('Lama Tayang :',dT.Tayang[1].LamaTayang);
-    	writeln;
-    end;
-
 end;
 
 function idx ( f : string; T : dbTayang) : integer;
@@ -149,7 +130,6 @@ procedure schedule( T : dbTayang);
 var
 	tanggal : string;
 	f	: string;
-	i : integer;
 	index	: integer;
 		
 {Algoritma}
@@ -165,63 +145,5 @@ begin
 	TulisJam(index,f,T,tanggal);
 	
 end;
-
-procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);
-
-{Kamus}
-Var
-  i:integer;
-  
-{Algoritma}
-Begin
-  i:=1;
-  While (i<=dT.Neff) do
-  Begin  
-    If (tgl.Tanggal=dT.Kapasitas[i].Tanggal) and (tgl.Bulan=dT.Kapasitas[i].Bulan) and (tgl.Tahun=dT.Kapasitas[i].Tahun) then
-    Begin
-      Writeln('>',dT.Kapasitas[i].Nama);
-      i:=i+1;
-      while (dT.Kapasitas[i].Nama=dT.Kapasitas[i-1].Nama) and (i<=dT.Neff) do
-        i:=i+1;
-    End
-    Else
-    i:=i+1;
-  End;
-End;
-
-procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);
-
-{Kamus}
-Var
-  i:integer;
-  
-{Algoritma}
-Begin
-  i:=1;
-  While (i<=dT.Neff) do
-  Begin  
-    If (tgl.Tanggal=dT.Kapasitas[i].Tanggal) and (tgl.Bulan=dT.Kapasitas[i].Bulan) and (tgl.Tahun=dT.Kapasitas[i].Tahun) then
-    Begin
-      Writeln('>',dT.Kapasitas[i].Nama);
-      i:=i+1;
-      while (dT.Kapasitas[i].Nama=dT.Kapasitas[i-1].Nama) and (i<=dT.Neff) do
-        i:=i+1;
-    End
-    Else
-    i:=i+1;
-  End;
-End;
-
-procedure upcoming(dT: dbKapasitas;tgl:tanggal);
-
-{Kamus}
-Var
-  i:integer;
-  
-{Algoritma}
-Begin
-  tgl:=afterXDay(tgl,7);
-  nowPlaying(dT,tgl);
-End;
 	
 end.

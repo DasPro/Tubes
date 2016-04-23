@@ -15,6 +15,8 @@ end;
 procedure load (var f:text;p:string);
 procedure loadMember(var dM: dbMember);
 
+procedure register(dM : dbMember);
+
 implementation
 procedure load (var f:text;p:string);
 begin
@@ -46,16 +48,39 @@ begin
         j:=j+1;
     end;
     dM.Neff:=j-1;
-	close(dMember);
-	writeln('> Data Member sudah di load, banyak data Member ada ',dM.Neff);
+	close(dMember);    
+end;
 
-	begin
-    	writeln('UserName :',dM.Member[1].UserName);
-    	writeln('Password :',dM.Member[1].Password);
-    	writeln('Saldo :',dM.Member[1].Saldo);
-    	writeln;
-    end;
-    
+procedure register(dM : dbMember);
+// Kamus Lokal
+Var
+	username,password : string;
+	i : integer;
+	found,stop : boolean;
+	
+// Algoritma	
+begin
+	stop:=false;
+	repeat
+		write('> Buat UserName Anda: ');readln(username);
+		i:=1;
+		found:=false;
+		while (found=false) and (i<=dM.Neff) do
+		begin
+			if username=dM.Member[i].UserName then
+			begin
+				found:=true;
+				writeln('> Maaf UserName sudah digunakan');
+			end;
+			i:=i+1;
+		end;
+		if found=false then stop:=true;
+	until stop=true;
+	write('> Masukkan password Anda: ');readln(password);
+	dM.Neff:=dM.Neff+1;
+	dM.Member[dM.Neff].UserName:=username;
+	dM.Member[dM.Neff].Password:=password;
+	dM.Member[dM.Neff].Saldo:=100000;
 end;
 
 	

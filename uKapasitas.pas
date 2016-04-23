@@ -53,18 +53,6 @@ begin
     end;
     dK.Neff:=j-1;
 	close(dKapasitas);
-	writeln('> Data Kapasitas sudah di load, banyak data Kapasitas Kursi ada ',dK.Neff);
-	
-    begin
-    	writeln('Nama :',dK.Kapasitas[1].Nama);
-    	writeln('Tanggal :',dK.Kapasitas[1].Tanggal);
-    	writeln('Bulan :',dK.Kapasitas[1].Bulan);
-    	writeln('Tahun :',dK.Kapasitas[1].Tahun);
-    	writeln('Jam :',dK.Kapasitas[1].Jam);
-    	writeln('Kapasitas :',dK.Kapasitas[1].Kapasitas);
-    	writeln;
-    end;
-
 end;
 
 	

@@ -16,41 +16,37 @@ var
 	
 begin
 	// -- Proses Inisiasi -- //
+	loadFile(tFilm,tTayang,tKapasitas,tMember,tPemesanan,tgl);
+	persiapan;
 	stopProgram:= false;
 	idx := 0;
 	
 	repeat
 		clrscr;
-		writeln('===========================================================');
-		writeln('    Selamat Datang di Pelayan Pemesanan Tiker Bioskop X    ');
-		writeln('===========================================================');
-		writeln();
-		writeln('Berikut adalah Fungsi yang bisa digunakan:                 ');
-		writeln(' 1. load            6. ratingFilter   11. payCreditCard    ');
-		writeln(' 2. nowPlaying      7. searchMovie    12. payMember        ');
-		writeln(' 3. upcoming        8. showMovie      13. loginMember      ');
-		writeln(' 4. schedule        9. showNextDay    14. register         ');
-		writeln(' 5. genreFilter    10. selectMovie    15. exit             ');
-		writeln();
+		layarUtama;
 		write('> ');readln(Fx);
 		case Fx of
-			'load'			: begin
-								loadFilm(tFilm);
-								loadTayang(tTayang);
-								loadKapasitas(tKapasitas);
-								loadMember(tMember);
-								loadTanggal(tgl);
-								delay(1500);
-							  end;
+			'load'			: loadFile(tFilm,tTayang,tKapasitas,tMember,tPemesanan,tgl);
+			'nowPlaying'	: nowPlaying(tKapasitas,tgl);
+			'upcoming'		: upcoming(tKapasitas,tgl);
 			'schedule'		: schedule(tTayang);
 			'genreFilter'	: genreFilter(tFilm);
 			'ratingFilter'	: ratingFilter(tFilm);
 			'searchMovie'	: searchMovie(tFilm);
+			'showMovie'		: showMovie(tFilm);
+			'showNextDay'	: showNextDay(TTayang, tgl);
+			'selectMovie'	: selectMovie(TKapasitas, TPemesanan); 
 			'payCreditCard' : payCreditCard(tPemesanan,tFilm);
 			'payMember'		: payMember(tPemesanan, tFilm, tMember, idx);
 			'loginMember'	: loginMember(tMember, idx);
-			'nowPlaying'  : nowPlaying(tKapasitas,tgl);
-			'upcoming'    : upcoming(tKapasitas,tgl);
+			'register'		: 
+			begin
+				register(tMember);
+				clrscr; 
+				layarUtama;
+				writeln('> Selamat Akun Member anda sudah terdaftar');
+			end;
+
 			'exit'			: begin
 									F15Exit(tKapasitas,tMember,tPemesanan);
 									stopProgram:=true;
