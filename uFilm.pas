@@ -166,7 +166,7 @@ end;
 			end;
 			if (found = False) then
 			begin
-				writeln('Masukkan judul film salah');
+				writeln('> Masukkan judul film salah');
 			end else
 			begin
 			writeln('> ', TFilm.Film[i].Nama);

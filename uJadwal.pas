@@ -163,8 +163,8 @@ begin
 		index := idx(f,T);
 		if(index=0) then
 		begin
-			writeln('Masukkan nama film atau tanggal tayang salah');
-			writeln('Silahkan ulang masukkan');
+			writeln('> Masukkan nama film atau tanggal tayang salah');
+			writeln('> Silahkan ulang masukkan');
 		end else
 			TulisJam(index,f,T,tanggal);
 	until (index>0) 

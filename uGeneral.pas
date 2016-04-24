@@ -365,7 +365,7 @@ procedure upcoming(dT: dbTayang; tgl: Tanggal);
 
 {Kamus}
 Var
-  i, j, a :integer;
+  i, j, a, count :integer;
   
 {Algoritma}
 Begin
@@ -374,16 +374,17 @@ Begin
 	writeln('> Film yang akan tayang :');
 	for j:=1 to 7 do
 	Begin
+		count:=0;
 		tgl:=afterXDay(tgl,1);
+		write('> ');
+		writeTanggal(tgl);
 		i:=1;
 		While (i<=dT.Neff) do
 		Begin
 			If (tgl.Tanggal=dT.Tayang[i].Tanggal) and (tgl.Bulan=dT.Tayang[i].Bulan) and (tgl.Tahun=dT.Tayang[i].Tahun) then
 			Begin
-				write('> ');
-				writeTanggal(tgl);
 				Writeln('> ',dT.Tayang[i].Nama);
-				writeln('>');
+				count:=count+1;
 				i:=i+1;
 				while (dT.Tayang[i].Nama=dT.Tayang[i-1].Nama) and (i<=dT.Neff) do
 				begin
@@ -394,6 +395,11 @@ Begin
 			Else
 				i:=i+1;
 		End;
+		if count<1 then
+		begin
+			writeln('> Tidak ada Film baru');
+		end;
+		writeln();
 	End;
 	if a=0 then
 	begin
@@ -538,7 +544,7 @@ end;
 		c := StrToInt(nopesan[3]); 
 	end;
 	if (T1.Pemesanan[c].Jenis<>'Belum Dibayar') then
-		writeln('Nomor pesanan telah dibayar')
+		writeln('> Nomor pesanan telah dibayar')
 	else
 	begin
 		DD := T1.Pemesanan[c].Tanggal;
@@ -571,6 +577,7 @@ end;
 	var
 	sisaSaldo, hargamember, harga : longint;
 	c : integer;
+	stop: boolean;
 	nopesan, pilihan : string;
 	//algoritma
 	begin
@@ -595,7 +602,7 @@ end;
 			c := StrToInt(nopesan[3]); 
 		end;
 		if (T1.Pemesanan[c].Jenis<>'Belum Dibayar') then
-			writeln('Nomor pesanan telah dibayar')
+			writeln('> Nomor pesanan telah dibayar')
 		else
 		begin
 			harga := T1.Pemesanan[c].Total;
@@ -612,19 +619,28 @@ end;
 			end else
 			begin
 				writeln('> Sisa saldo anda tidak mencukupi');
-				writeln('> Silahkan pilih metode pembayaran lain. Metode pembayaran yang dapat anda lakukan:');
+				writeln('> Silahkan pilih metode pembayaran lain.');
+				writeln('> Metode pembayaran yang dapat anda lakukan:');
 				writeln('> 1 Tunai');
-				writeln('> 2 Pay Member');
-				readln(pilihan);
-				if (pilihan = 'Tunai') then
-				begin
-					writeln('> Kode booking anda adalah ', nopesan);
-					writeln('> Silahkan melakukan pembayaran di bioskop');
-					T1.Pemesanan[c].Jenis := 'Tunai';
-				end else if (pilihan = 'Pay Member') then 
-				begin
-					payCreditCard(T1, T2);
-				end;
+				writeln('> 2 payCreditCard');
+				stop:=false;
+				repeat
+					write('> ');readln(pilihan);
+					if (pilihan = 'Tunai') then
+					begin
+						writeln('> Kode booking anda adalah ', nopesan);
+						writeln('> Silahkan melakukan pembayaran di bioskop');
+						T1.Pemesanan[c].Jenis := 'Tunai';
+						stop:=true;
+					end else if (pilihan = 'payCreditCard') then 
+					begin
+						payCreditCard(T1, T2);
+						stop:=true;
+					end else
+					begin
+						writeln('> Input salah!');
+					end;
+				until stop=true;
 			end;
 		end;	
 	end;
