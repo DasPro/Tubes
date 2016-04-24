@@ -21,45 +21,69 @@ type dbPemesanan = record
 end;
 
 procedure load (var f:text;p:string);
+{* procedure yang digunakan untuk meng-assign nama lojik ke nama fisik
+I.S	: f terdefinisi
+F.S	: p telah di-assign dengan variabel f *}
+
 procedure loadPemesanan(var dP : dbPemesanan);
+{* procedure yang digunakan untuk me-load data dari file eksternal pemesanan.txt ke dalam variabel internal
+I.S	: file eksternal pemesanan.txt telah terdefinisi
+F.S	: data di pemesanan.txt telah ditampung ke dalam dP *}
+
 procedure loadFile(var dF : dbFilm; var dT : dbTayang; var dK: dbKapasitas; var dM : dbMember; var dP : dbPemesanan; var tgl : Tanggal);
-procedure layarUtama;
-procedure persiapan;
+{* procedure yang digunakan untuk me-load semua data pada file eksternal ke dalam variabel internal
+I.S	: semua file eksternal telah terdefinisi
+F.S	: data pada file eksternal telah ditampung dalam variabel dF, dT, dK, dM, dP, dan tgl}
+ 
+procedure layarUtama();
+{* procedure yang digunakan untuk menampilkan daftar menu yang dapat diakses *}
+
+procedure persiapan();
+{* procedure yang digunakan untuk menampilkan tampilan di awal eksekusi program *}
 
 procedure showNextDay(TJadwal : dbTayang; tgl : Tanggal);
+{* procedure yang digunakan untuk menampilkan jadwal film pada tanggal setelah hari ini *}
+
 procedure selectMovie(var TKapasitas : dbKapasitas; var TPemesanan : dbPemesanan; TFilm : dbFilm);
+{* procedure digunakan untuk melakukan pemilihan film dan kemudian melakukan pemesanan tiket
+I.S	: TKapasitas, TPemesanan, TFilm telah terdefinisi
+F.S : TKapasitas, TPemesanan telah diupdate berdasarkan pemesanan dari user *}
 
 procedure nowPlaying(dT: dbKapasitas;tgl:tanggal);	
-{Procedure yang menampilkan film hari ini
+{* procedure yang menampilkan film hari ini
   I.S : dT terdefinisi
-  F.S : Menuliskan judul film yang tayang}
+  F.S : Menuliskan judul film yang tayang *}
   
 procedure upcoming(dT: dbTayang;tgl:tanggal);	
-{Procedure yang menampilkan film yang tayang minggu depan atau h+7
+{* procedure yang menampilkan film yang tayang minggu depan atau h+7
   I.S : dT terdefinisi
-  F.S : Menuliskan judul film yang tayang}
+  F.S : Menuliskan judul film yang tayang *}
   
 procedure F15Exit (T1 : dbKapasitas; T3 : dbMember; T2 : dbPemesanan);
-{* Procedure F15Exit digunakan untuk menyalin semua hasil perubahan file eksternal
+{* procedure F15Exit digunakan untuk menyalin semua hasil perubahan file eksternal
    yang ditampung di dalam array ke dalam file eksternal awal tersebut
    I.S : T1, T2, dan T3 telah terdefinisi
    F.S : File eksternal kapasitas.txt, pemesanan.txt, dan member.txt telah di-update *}
 
 procedure loginMember(T: dbMember; var idx: integer);
-{I.S : Terdefinisi
-F.S: idx > 0 sebagai penanda login}
+{* procedure digunakan untuk melakukan login member dengan memasukkan username dan password
+I.S : Terdefinisi
+F.S: idx > 0 sebagai penanda login *}
 
 procedure payMember (var T1 : dbPemesanan ; T2 : dbFilm ;var T3: dbMember ;var idx : integer); 
-{I.S : T1, T2, dan T3 terdefinisi
- F.S : pembayaran sukses}
+{* procedure digunakan untuk melakukan pembayaran dengan menggunakan akun member
+I.S : T1, T2, dan T3 terdefinisi
+F.S : pembayaran sukses *}
  
 procedure payCreditCard(var T1: dbPemesanan; T2: dbFilm);
-{I.S : T1 dan T2 terdefinisi
-F.S : Jenis pembayaran terupdate}
+{* procedure digunakan untuk melakukan pembayaran dengan menggunakan credit card
+I.S : T1 dan T2 terdefinisi
+F.S : Jenis pembayaran terupdate *}
  
 function cariIndeks(Tab1 : dbFilm; Tab2 :dbPemesanan) : integer;
-{I.S : Tab1 dan Tab2 terdefinisi}
-{F.S : indeks untuk array terdefinisi}
+{* procedure digunakan untuk melakukan pencarian indeks
+I.S : Tab1 dan Tab2 terdefinisi
+F.S : indeks untuk array terdefinisi *}
  
 implementation
 procedure load (var f:text;p:string);
