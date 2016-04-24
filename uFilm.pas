@@ -32,11 +32,14 @@ procedure ratingFilter(dF: dbFilm);		//F6-ratingFilter
 {*	procedure untuk menampilkan List Judul Film berdasarkan RatingViewer.
 I.S	: dataFilm sudah Siap. RatingViewer di Input oleh User
 F.S	: menampilkan List Judul Film yang sesuai dengan RatingViewer Input dari User *}
-procedure searchMovie(dF : dbFilm); 	//F7-searchMovie
+procedure searchMovie(dF : dbFilm); 		//F7-searchMovie
 {*	procedure untuk mencari keyword berdasarkan Nama Film, Genre Film, Sinopsis.
 I.S	: dataFilm sudah terdefinisi, input dan f telah terdefinisi
-F.S : menampilkan Nama Film yang sesuai dengan keyword yang dimasukkan	*}
-procedure showMovie(TFilm : dbFilm);
+F.S 	: menampilkan Nama Film yang sesuai dengan keyword yang dimasukkan	*}
+procedure showMovie(TFilm : dbFilm);		//F8-showMovie
+{*	procedure untuk menampilkan data film berupa genre, rating, durasi, dan sinopsis film
+I.S	: TFilm telah terdefinisi
+F.S	: menampilkan Nama, Genre, Rating, Durasi, dan Sinopsis Film yang dicari *} 
 
 implementation
 // -------------- Load untuk dataFilm.txt --------------- //
