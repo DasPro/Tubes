@@ -15,9 +15,19 @@ type dbMember = record
 end;
 
 procedure load (var f:text;p:string);
+{* procedure yang digunakan untuk meng-assign nama lojik ke nama fisik
+I.S	: f terdefinisi
+F.S	: p telah di-assign dengan variabel f *}
+
 procedure loadMember(var dM: dbMember);
+{* procedure yang digunakan untuk me-load data dari file eksternal member.txt ke dalam variabel internal
+I.S	: file eksternal member.txt telah terdefinisi
+F.S	: data di member.txt telah ditampung ke dalam dM *}
 
 procedure F14Register(var dM : dbMember);
+{* procedure yang digunakan untuk melakukan registrasi member dengan saldo awal 100000
+I.S	: dM telah terdefinisi
+F.S	: dM telah diupdate dengan masukkan dari user *}
 
 implementation
 procedure load (var f:text;p:string);
