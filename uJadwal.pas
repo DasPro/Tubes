@@ -104,10 +104,11 @@ procedure TulisJam (idx : integer; f : string; T : dbTayang; tanggal : string);
 
 {Kamus}
 var
-	j, i : integer;
+	j, i, k, a : integer;
 	h,b,y : integer;
 	dd,mm,yy : integer;
 	cek : boolean;
+	
 	
 {Algoritma}
 begin
@@ -120,25 +121,64 @@ repeat
 	val(copy(tanggal,1,2), dd);
 	val(copy(tanggal,4,2), mm);
 	val(copy(tanggal,7,4), yy);
-	if (mm<10) then
+	if (mm<10) and (dd<10) then
+		writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal 0',dd,'-0',mm,'-',yy,' :')
+	else if (mm<10) then
 		writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal ',dd,'-0',mm,'-',yy,' :')
+	else if (dd<10) then
+		writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal 0',dd,'-',mm,'-',yy,' :')
 	else
 		writeln('> Daftar Jam Tayang Film ',T.Tayang[idx].Nama,' pada tanggal ',dd,'-',mm,'-',yy,' :');
-	if (yy = y) and (mm = b) then
-		begin
-			for j := h  to (h+6) do
+	k := h + 6;
+	if (k>tanggalMax(b,y)) then
+	begin
+		if (yy = y) and ((mm = b) or (mm = b+1)) then
 			begin
-				if ( j = dd ) then 
-				begin
-					for i := idx to (idx+3) do
+					a := k - tanggalMax(b,y);			
+					for j := h  to tanggalMax(b,y) do
 					begin
-						cek := true;
-						if (lowAll(T.Tayang[i].Nama)=lowAll(f)) then
-							writeln('> ',T.Tayang[i].Jam);
+						if ( j = dd ) then 
+						begin
+							for i := idx to (idx+3) do
+							begin
+								cek := true;
+								if (lowAll(T.Tayang[i].Nama)=lowAll(f)) then
+									writeln('> ',T.Tayang[i].Jam);
+							end;
+						end;
 					end;
-				end;
+					for j := 1  to a do
+					begin
+						if ( j = dd ) then 
+						begin
+							for i := idx to (idx+3) do
+							begin
+								cek := true;
+								if (lowAll(T.Tayang[i].Nama)=lowAll(f)) then
+									writeln('> ',T.Tayang[i].Jam);
+							end;
+						end;
+					end;
 			end;
+	end else			
+	begin
+		if (yy = y) and (mm = b) then
+		begin
+					for j := h  to (h+6) do
+					begin
+						if ( j = dd ) then 
+						begin
+							for i := idx to (idx+3) do
+							begin
+								cek := true;
+								if (lowAll(T.Tayang[i].Nama)=lowAll(f)) then
+									writeln('> ',T.Tayang[i].Jam);
+							end;
+						end;
+					end;
 		end;
+	end;
+		
 		if cek=false then 
 		begin
 			writeln('> Jadwal tak tersedia ');
