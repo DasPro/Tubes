@@ -311,7 +311,7 @@ begin
 					begin
 						while (i < TFilm.Neff) and (cek = False) do
 						begin
-							if TFilm.Film[i].Nama = film then
+							if lowAll(TFilm.Film[i].Nama) = lowAll(film) then
 							begin
 								cek := True;
 							end else i := i +1;
