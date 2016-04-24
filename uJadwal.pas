@@ -19,20 +19,26 @@ type dbTayang = record
 end;
 
 procedure load (var f:text;p:string);
+{* procedure yang digunakan untuk meng-assign nama lojik ke nama fisik
+I.S	: f terdefinisi
+F.S	: p telah di-assign dengan variabel f *}
 procedure loadTayang(var dT: dbTayang);
+{* procedure yang digunakan untuk me-load data dari file eksternal jadwal.txt ke dalam variabel internal
+I.S	: file eksternal jadwal.txt telah terdefinisi
+F.S	: data di jadwal.txt telah ditampung ke dalam dT *}
 
 function idx ( f : string; T : dbTayang) : integer;
 {Fungsi yang digunakan untuk mencari index pertama dari suatu film}
 
 procedure TulisJam (idx : integer; f : string; T : dbTayang; tanggal : string);
-{	Procedure TulisJam digunakan untuk menuliskan Jam Tayang dari suatu Film pada tanggal tertentu
+{*	Procedure TulisJam digunakan untuk menuliskan Jam Tayang dari suatu Film pada tanggal tertentu
 	I.S : idx, f, T, dd, mm, yy telah terdefinisi
-	F.S : Menuliskan Jam Tayang kepada user 	}
+	F.S : Menuliskan Jam Tayang kepada user 	*}
 
 procedure schedule( T : dbTayang);
-{	Procedure schedule digunakan untuk menampilkan Jam Tayang dari input user
+{*	Procedure schedule digunakan untuk menampilkan Jam Tayang dari input user
 	I.S : T terdefinisi
-	F.S : Menuliskan Jam Tayang Film kepada user	}
+	F.S : Menuliskan Jam Tayang Film kepada user	*}
 	
 	
 implementation
