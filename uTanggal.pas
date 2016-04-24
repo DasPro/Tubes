@@ -10,17 +10,41 @@ type Tanggal = record
 end;
 
 procedure load (var f:text;p:string);
+{* procedure yang digunakan untuk me-load data dari file eksternal pemesanan.txt ke dalam variabel internal
+I.S	: file eksternal pemesanan.txt telah terdefinisi
+F.S	: data di pemesanan.txt telah ditampung ke dalam dP *}
+
 procedure loadTanggal(var tgl: Tanggal);
+{* procedure yang digunakan untuk me-load data dari file eksternal tanggal.txt ke dalam variabel internal
+I.S	: file eksternal tanggal.txt telah terdefinisi
+F.S	: data di tanggal.txt telah ditampung ke dalam tgl *}
 
 procedure makeTanggal(Tanggal,Bulan,Tahun :integer; var tgl : Tanggal);
-function isKabisat(Tahun: integer) : boolean;
-function nameBulan(Bulan: integer): string;
-function getDay(Tanggal, Bulan, Tahun : integer) : string ;
-function tanggalMax(Bulan,Tahun : integer) : integer;
-function afterXDay(tgl : Tanggal; x : integer ) : Tanggal ;
-procedure writeTanggal(tgl :Tanggal);
-function isTanggalValid(Tanggal, Bulan, Tahun : integer) : boolean;
+{* procedure yang digunakan untuk memunculkan type tanggal dari Tanggal, Bulan, dan Tahun
+I.S	: Tanggal, Bulan, Tahun telah terdefinisi
+F.S	: type tanggal terdefinisi *}
 
+function isKabisat(Tahun: integer) : boolean;
+{* function digunakan untuk mengecek apakah Tahun merupakan tahun kabisat atau bukan *}
+
+function nameBulan(Bulan: integer): string;
+{* function digunakan untuk memunculkan nama bulan dari input Bulan yang bertipe integer *}
+function getDay(Tanggal, Bulan, Tahun : integer) : string ;
+{* functon digunakan untuk memunculkan nama hari dari Tanggal, Bulan, dan Tahun *}
+
+function tanggalMax(Bulan,Tahun : integer) : integer;
+{* function digunakan untuk mengecek tanggal maksimum dari suatu Bulan dan Tahun *}
+
+function afterXDay(tgl : Tanggal; x : integer ) : Tanggal ;
+{* function yang digunakan untuk memunculkan tanggal setelah beberapa hari sesudahnya *}
+
+procedure writeTanggal(tgl :Tanggal);
+{* procedure yang digunakan untuk menuliskan tgl
+I.S	: tgl terdefinisi
+F.S	: tgl dimunculkan ke layar *}
+
+function isTanggalValid(Tanggal, Bulan, Tahun : integer) : boolean;
+{* function digunakan untuk mengecek masukkan Tanggal, Bulan, dan Tahun apakah valid atau tidak *}
 
 implementation
 // --- Load File untuk tanggal.txt --- //
