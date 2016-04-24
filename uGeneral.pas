@@ -191,10 +191,10 @@ begin
 				writeln('> Apakah anda ingin melanjutkan pencarian');
 				write('> Y/N : ');
 				readln(terminate);
-				if (lowAll(terminate)='n') then
+				if (low(terminate)='n') then
 				begin
 					berhenti:=true;
-				end else if (lowAll(terminate)='y') then 
+				end else if (low(terminate)='y') then 
 				begin
 					berhenti:= false;
 				end else 
