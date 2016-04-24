@@ -18,7 +18,13 @@ type dbKapasitas = record
 end;
 
 procedure load (var f:text;p:string);
+{* procedure yang digunakan untuk meng-assign nama lojik ke nama fisik
+I.S	: f terdefinisi
+F.S	: p telah di-assign dengan variabel f *}
 procedure loadKapasitas(var dK: dbKapasitas);
+{* procedure yang digunakan untuk me-load data dari file eksternal kapasitas.txt ke dalam variabel internal
+I.S	: file eksternal kapasitas.txt telah terdefinisi
+F.S	: data di kapasitas.txt telah ditampung ke dalam dK *}
 
 implementation
 procedure load (var f:text;p:string);
